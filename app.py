@@ -50,7 +50,26 @@ if st.button("Materializar Terapia Musical"):
     if texto_total:
         try:
             # 1. Gerar o objeto music21
+            # --- 3. PROCESSAMENTO E COMPROVAÇÃO ---
+if st.button("Materializar Terapia Musical"):
+    texto_total = f"{relato} {intervencao}".strip()
+    
+    if texto_total:
+        # 1. DEFINA A OITAVA COM UM VALOR PADRÃO
+        oitava = 4  # Valor padrão (Médio)
+        
+        # 2. Atualize conforme a seleção do usuário
+        if "Grave" in elemento_natureza: 
+            oitava = 2
+        elif "Média" in elemento_natureza: 
+            oitava = 4
+        elif "Aguda" in elemento_natureza: 
+            oitava = 6
+
+        # 3. Agora a função 'oitava' existe com certeza!
+        try:
             musica = materializar_terapia_r3(texto_total, oitava)
+           
             
             # 2. Criar buffer de memória (não toca no disco do servidor)
             midi_buffer = io.BytesIO()
