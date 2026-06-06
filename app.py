@@ -40,33 +40,37 @@ elemento_natureza = st.sidebar.selectbox("Natureza da Terapia", ["Grave", "Médi
 relato = st.text_area("Relato do Paciente", height=150)
 intervencao = st.text_area("Intervenção do Especialista", height=150)
 
-# --- 3. PROCESSAMENTO ÚNICO ---
-if st.button("Materializar Terapia Musical"):
-    texto_total = f"{relato} {intervencao}".strip()
+# --- 3. PROCESSAMENTO ÚNICO (Substitua esta parte no seu app.py) ---
+if st.button("Materializar Musica"):
+    texto_total = f"Paciente: {nome_paciente}. Idade: {idade_paciente}. Relato: {relato}. Intervenção: {intervencao}".strip()
     
-    if texto_total:
+    if nome_paciente and (relato or intervencao):
         try:
-            # Lógica clara de Natureza -> Oitava
-            oitava = 4 # Padrão
-            if "Grave" in elemento_natureza:
-                oitava = 2
-            elif "Aguda" in elemento_natureza:
-                oitava = 6
+            # 1. Definir a oitava
+            oitava = 4
+            if "Grave" in elemento_natureza: oitava = 2
+            elif "Aguda" in elemento_natureza: oitava = 6
 
+            # 2. Gerar a música
             musica = materializar_terapia_r3(texto_total, oitava)
             
-            midi_buffer = io.BytesIO()
-            musica.write('midi', fp=midi_buffer)
-            midi_buffer.seek(0)
+            # 3. Converter stream para ficheiro MIDI em memória (CORREÇÃO AQUI)
+            mf = midi.translate.streamToMidiFile(musica)
+            midi_bytes = mf.writestr() # Isto transforma a stream em bytes
             
+            # 4. Criar o buffer de bytes
+            midi_buffer = io.BytesIO(midi_bytes)
+            
+            # 5. Botão de download
             st.download_button(
-                label="Baixar Áudio-Terapia (MIDI)",
+                label="Baixar Áudio-Musica (MIDI)",
                 data=midi_buffer,
-                file_name="terapia_r3.mid",
+                file_name=f"musica_{nome_paciente.replace(' ', '_')}.mid",
                 mime="audio/midi"
             )
-            st.success("Terapia pronta para download!")
+            st.success("Musica gerada com sucesso!")
+            
         except Exception as e:
             st.error(f"Erro ao processar música: {e}")
     else:
-        st.warning("Por favor, preencha os campos de texto.")
+        st.warning("Por favor, preencha os campos obrigatórios.")
