@@ -2,7 +2,7 @@ import streamlit as st
 from music21 import stream, note, meter, metadata, midi
 import tempfile
 import os
-
+import io
 # --- 1. NÚCLEO DE TRANSFORMAÇÃO MATEMÁTICA R3 ---
 def materializar_terapia_r3(texto_clinico, oitava_base=4):
     sc = stream.Score()
@@ -44,36 +44,29 @@ st.title("Aplicativo de Música Personalizada")
 relato = st.text_area("Relato do Paciente", height=150)
 intervencao = st.text_area("Intervenção do Especialista", height=150)
 
-# --- 3. PROCESSAMENTO ---
 if st.button("Materializar Terapia Musical"):
     texto_total = f"{relato} {intervencao}".strip()
     
     if texto_total:
-        # Lógica de oitava
-        oitava = 2 if "Grave" in "Mar" else (4 if "Média" in "Chuva" else 6)
-
-        musica = materializar_terapia_r3(texto_total, oitava)
-        
-        # CORREÇÃO: Usar diretório temporário para evitar erro de permissão
-        tmp_dir = tempfile.gettempdir()
-       # Em vez de tempfile, vamos usar o diretório local onde o script corre
-        fp = "terapia_r3.mid"
-        
-        # Gerar e salvar
-        mf = midi.translate.streamToMidiFile(musica)
-        mf.open(fp, 'wb')
-        mf.write()
-        mf.close()
-
-        # Leitura binária
-        with open(fp, "rb") as f:
+        try:
+            # 1. Gerar o objeto music21
+            musica = materializar_terapia_r3(texto_total, oitava)
+            
+            # 2. Criar buffer de memória (não toca no disco do servidor)
+            midi_buffer = io.BytesIO()
+            musica.write('midi', fp=midi_buffer)
+            midi_buffer.seek(0)
+            
+            # 3. ÚNICO botão de download
             st.download_button(
                 label="Baixar Áudio-Terapia (MIDI)",
-                data=f,
+                data=midi_buffer,
                 file_name="terapia_r3.mid",
                 mime="audio/midi"
             )
-        st.success("Equação musical gerada com sucesso!")
-
+            st.success("Terapia pronta para download!")
+            
+        except Exception as e:
+            st.error(f"Erro ao processar música: {e}")
     else:
-        st.warning("Preencha os campos.")
+        st.warning("Por favor, preencha os campos de texto.")
