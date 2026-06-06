@@ -1,3 +1,7 @@
+st.set_page_config(page_title="Sistema Audível R3", layout="wide")
+
+st.title("Aplicativo de Música Personalizada")
+
 import streamlit as st
 from music21 import stream, note, meter, metadata, midi
 import io
