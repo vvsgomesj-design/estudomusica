@@ -1,10 +1,10 @@
-st.set_page_config(page_title="Sistema Audível R3", layout="wide")
-
-st.title("Aplicativo de Música Personalizada")
-
 import streamlit as st
 from music21 import stream, note, meter, metadata, midi
 import io
+
+st.set_page_config(page_title="Sistema Audível R3", layout="wide")
+
+st.title("Aplicativo de Música Personalizada")
 
 # 1. Função de processamento musical (sempre no topo)
 def materializar_terapia_r3(texto_clinico, oitava_base=4):
