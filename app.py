@@ -7,7 +7,7 @@ st.set_page_config(page_title="Sistema Audível R3", layout="wide")
 st.title("Aplicativo de Música Personalizada")
 
 # 1. Função de processamento musical (sempre no topo)
-def materializar_terapia_r3(texto_clinico, oitava_base=4):
+def materializar_musica_r3(texto_clinico, oitava_base=4):
     sc = stream.Score()
     sc.insert(0, metadata.Metadata())
     sc.metadata.title = 'Equação Diferencial R3 - Terapia'
@@ -34,9 +34,9 @@ def materializar_terapia_r3(texto_clinico, oitava_base=4):
 
 # 2. Interface (sem duplicações)
 st.set_page_config(page_title="Sistema Audível R3", layout="wide")
-st.title("Sistema Audível R3 - Terapia Musical")
+st.title("Sistema Audível R3")
 
-elemento_natureza = st.sidebar.selectbox("Natureza da Terapia", ["Grave", "Média", "Aguda"], key="natureza_terapia_sidebar")
+elemento_oitava = st.sidebar.selectbox("Natureza da Oitava", ["Grave", "Média", "Aguda"], key="natureza_oitava_sidebar")
 col1, col2 = st.columns(2)
 with col1:
     nome_paciente = st.text_input("Nome do Paciente")
@@ -47,7 +47,7 @@ relato = st.text_area("Relato do Paciente", height=150)
 intervencao = st.text_area("Intervenção do Especialista", height=150)
 
 # 3. Processamento ÚNICO
-if st.button("Materializar Terapia Musical"):
+if st.button("Materializar  Musica"):
     texto_total = f"Paciente: {nome_paciente}. Idade: {idade_paciente}. Relato: {relato}. Intervenção: {intervencao}".strip()
     
     if nome_paciente and (relato or intervencao):
@@ -56,18 +56,18 @@ if st.button("Materializar Terapia Musical"):
             if "Grave" in elemento_natureza: oitava = 2
             elif "Aguda" in elemento_natureza: oitava = 6
 
-            musica = materializar_terapia_r3(texto_total, oitava)
+            musica = materializar_musica_r3(texto_total, oitava)
             mf = midi.translate.streamToMidiFile(musica)
             midi_bytes = mf.writestr()
             midi_buffer = io.BytesIO(midi_bytes)
             
             st.download_button(
-                label="Baixar Áudio-Terapia (MIDI)",
+                label="Baixar Áudio-Musica (MIDI)",
                 data=midi_buffer,
-                file_name=f"terapia_{nome_paciente.replace(' ', '_')}.mid",
+                file_name=f"musica_{nome_paciente.replace(' ', '_')}.mid",
                 mime="audio/midi"
             )
-            st.success("Terapia musical gerada com sucesso!")
+            st.success("Musica gerada com sucesso!")
         except Exception as e:
             st.error(f"Erro ao gerar: {e}")
     else:
