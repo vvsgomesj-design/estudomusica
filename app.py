@@ -32,7 +32,7 @@ def materializar_terapia_r3(texto_clinico, oitava_base=4):
 st.set_page_config(page_title="Sistema Audível R3", layout="wide")
 st.title("Sistema Audível R3 - Terapia Musical")
 
-elemento_natureza = st.sidebar.selectbox("Natureza da Terapia", ["Grave", "Média", "Aguda"])
+elemento_natureza = st.sidebar.selectbox("Natureza da Terapia", ["Grave", "Média", "Aguda"], key="natureza_terapia_sidebar")
 col1, col2 = st.columns(2)
 with col1:
     nome_paciente = st.text_input("Nome do Paciente")
